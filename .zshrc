@@ -101,3 +101,4 @@ fi
 # <<< conda initialize <<<
 
 . "$HOME/.cargo/env"
+[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
