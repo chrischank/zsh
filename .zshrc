@@ -1,6 +1,32 @@
+# ASCII Art initialization
+cat << "EOF"
+        _    .  ,   .           .
+    *  / \_ *  / \_      _  *        *   /\'__        *
+      /    \  /    \,   ((        .    _/  /  \  *'.
+ .   /\/\  /\/ :' __ \_  `          _^/  ^/    `--.
+    /    \/  \  _/  \-'\      *    /.' ^_   \_   .'\  *
+  /\  .-   `. \/     \ /==~=-=~=-=-;.  _/ \ -. `_/   \
+ /  `-.__ ^   / .-'.--\ =-=~_=-=~=^/  _ `--./ .-'  `-
+/       `.  / /       `.~-^=-=~=^=.-'      '-._ `._
+
+EOF
+
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-PS1="%B%{$fg[cyan]%}[%{$fg[magenta]%}%~%{$fg[cyan]%}]%{$fg[yellow]%}>%b "
+
+# Function to get git branch
+function git_branch_name() {
+    branch=$(git symbolic-ref HEAD 2>/dev/null | sed 's|^refs/heads/||')
+    if [[ $branch == "" ]]; then
+        echo ""
+    else
+        echo "%{$fg[white]%}[%{$fg[white]%}⌥ %{$fg[green]%}${branch}%{$fg[white]%}]"
+    fi
+}
+
+# Modify prompt to include git branch and show cursor on new line
+setopt PROMPT_SUBST
+PS1=$'%B%{$fg[cyan]%}╭─{%{$fg[magenta]%}%~%{$fg[cyan]%}} $(git_branch_name)%{$reset_color%}\n%{$fg[cyan]%}╰─%B%{$fg[yellow]%}▶%b '
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.
 setopt interactive_comments
@@ -12,6 +38,8 @@ source ~/.zprofile
 HISTSIZE=10000000
 SAVEHIST=10000000
 HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
+# Create history directory if it doesn't exist
+[[ -d "${XDG_CACHE_HOME:-$HOME/.cache}/zsh" ]] || mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 
 # Load aliases and shortcuts if existent.
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
@@ -78,27 +106,33 @@ bindkey -M vicmd '^e' edit-command-line
 bindkey -M visual '^[[P' vi-delete
 
 # Load syntax highlighting; should be last.
-source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
-source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Try system-wide installation first, then fallback to user installation
+if [ -f /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
+    source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+elif [ -f ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-
-if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/mamba.sh" ]; then
-    . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/mamba.sh"
-fi
+#__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+#if [ $? -eq 0 ]; then
+#    eval "$__conda_setup"
+#else
+#    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
+#        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
+#    else
+#        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
+#    fi
+#fi
+#unset __conda_setup
+#
+#if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/mamba.sh" ]; then
+#    . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/mamba.sh"
+#fi
 # <<< conda initialize <<<
 
-. "$HOME/.cargo/env"
+# Load cargo environment if it exists
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
