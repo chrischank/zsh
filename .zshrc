@@ -40,7 +40,7 @@ function git_branch_name() {
 
 # Modify prompt to include git branch and show cursor on new line
 setopt PROMPT_SUBST
-PS1=$'%B%{$fg[cyan]%}╭─{%{$fg[magenta]%}%~%{$fg[cyan]%}} $(git_branch_name)%{$reset_color%}\n%{$fg[cyan]%}╰─%B%{$fg[yellow]%}▶%b '
+PS1=$'%B%{$fg[black]%}╭─{%{$fg[white]%}%~%{$fg[black]%}} $(git_branch_name)%{$reset_color%}\n%{$fg[black]%}╰─%B%{$fg[red]%}▶%b '
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.
 setopt interactive_comments
@@ -150,3 +150,18 @@ fi
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
+
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
+# lazygit
+lg()
+{
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+
+    lazygit "$@"
+
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
+}
