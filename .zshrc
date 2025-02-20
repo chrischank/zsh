@@ -121,8 +121,8 @@ bindkey -M visual '^[[P' vi-delete
 
 # Load syntax highlighting; should be last.
 # Try system-wide installation first, then fallback to user installation
-if [ -f /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]; then
-    source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 elif [ -f ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
@@ -150,6 +150,11 @@ fi
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
+
+# Launch function
+launch() {
+    "$@" &>/dev/null & disown && exit
+}
 
 # lazygit
 lg()
