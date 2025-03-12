@@ -149,9 +149,9 @@ fi
 # Load cargo environment if it exists
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
-
-export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+launch() {
+    "$@" &>/dev/null & disown && exit
+}
 
 # lazygit
 lg()
