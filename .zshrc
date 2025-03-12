@@ -165,3 +165,5 @@ lg()
             rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
     fi
 }
+
+. "$HOME/.local/bin/env"
