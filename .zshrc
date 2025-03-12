@@ -166,4 +166,4 @@ lg()
     fi
 }
 
-. "$HOME/.local/bin/env"
+export PATH="$PATH:/opt/nvim/"
