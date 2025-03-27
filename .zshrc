@@ -173,3 +173,6 @@ function yz() {
 }
 
 . "$HOME/.local/bin/env"
+
+# add Pulumi to the PATH
+export PATH=$PATH:/home/chris/.pulumi/bin
