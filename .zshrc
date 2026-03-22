@@ -172,7 +172,5 @@ function yz() {
 	rm -f -- "$tmp"
 }
 
-. "$HOME/.local/bin/env"
-
 # add Pulumi to the PATH
 export PATH=$PATH:/home/chris/.pulumi/bin
